@@ -506,29 +506,6 @@ f\left(x\right)=\sum_{\beta=0}^{k}c_{i-k+\beta}B_{i-k+\beta}\left(x\right)
  штук).
 \end_layout
 
-\begin_layout Standard
-\begin_inset Separator plain
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-0 1
-\end_layout
-
-\begin_layout Standard
-1 2
-\end_layout
-
-\begin_layout Standard
-2 4
-\end_layout
-
-\begin_layout Standard
-3 6
-\end_layout
-
 \begin_layout Subsection
 Сложность алгоритма
 \end_layout
