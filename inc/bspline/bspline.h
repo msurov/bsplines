@@ -1,7 +1,6 @@
 #pragma once
 
 
-
 namespace bspline
 {
     /**
@@ -72,7 +71,7 @@ namespace bspline
     /**
      * @brief De Boor's algorithm
      *
-     *  t   knits
+     *  t   knots
      *  c   controls
      *  k   degree of spline
      *  i   knots index x; can be found by get_knot_index(t, k, x)
@@ -121,11 +120,11 @@ namespace bspline
      * Evaluate spline basis functions B_{i-k..i,k}(x)
      * or derivative of order nder of them
      *
-     *  @param pknot pointer to i-th knot s.t. pknot[0] <= x < pknot[1]
-     *  @param k    degree of spline
+     *  @param pti  pointer to i-th knot s.t. pknot[0] <= x < pknot[1]
+     *  @param k    degree of the spline
      *  @param x    argument to evaluate the basis functions at
-     *  @param d    pointer to a buffer of size (k+1) to write basis functions values
-     *  @param nder order of derivative to evaluate (0 if no derivatives needed)
+     *  @param d    pointer to a buffer of size (k+1) to write basis functions values to
+     *  @param nder order of derivative to evaluate (0 if functions needed)
      */
     template <typename Arg>
     static void __spline_eval_basis(
@@ -183,10 +182,8 @@ namespace bspline
     }
 
     /**
-     * @brief c-style function
-     * Evaluate spline basis functions B_{i-k..i,k}(x)
+     * @brief Evaluate spline basis functions B_{i-k..i,k}(x)
      * or derivative of order nder of them
-     *
      *  @param t    knots array
      *  @param k    degree of spline
      *  @param i    index of the knot s.t. t[i] <= x < t[i+1]
@@ -208,7 +205,8 @@ namespace bspline
     }
 
     /**
-     * @brief evaluate value of the spline function given by the parameters
+     * @brief evaluate value of the spline function using 
+     *  De Boor's algorithm
      * @param t spline knots
      * @param c spline coefficients (controls)
      * @param k spline order
@@ -226,7 +224,8 @@ namespace bspline
     }
 
     /**
-     * @brief evaluate value of the spline function given by the parameters
+     * @brief evaluate value of the spline function
+     *  by evaluating basis function
      * @param t spline knots
      * @param c spline coefficients (controls)
      * @param k spline order
@@ -246,50 +245,12 @@ namespace bspline
     {
         using Result = typename CtrlsArr::value_type;
         using Coef = typename KnotsArr::value_type;
-
         int i = spline_knot_index(t, k, x);
         Coef d[k + 1];
-
         spline_eval_basis(t, k, i, x, d, nder);
-
         Result result = d[0] * c[i - k];
         for (int j = 1; j <= k; ++ j)
             result += d[j] * c[i - k + j];
-
         return result;
-    }
-
-    template <typename ArgType, typename ValType>
-    class SplineT
-    {
-    private:
-        const int _k;
-        std::vector<ArgType> _t;
-        std::vector<ValType> _c;
-
-    public:
-        constexpr SplineT(std::vector<ArgType> const& knots, std::vector<ValType> const& ctrls, int k) :
-            _k(k), _t(knots), _c(ctrls) {}
-
-        inline ValType operator() (ArgType arg, int nder=0) const
-        {
-            return spline_eval(_t, _c, _k, arg, nder);
-        }
-
-        inline ArgType minarg() const
-        {
-            return *_t.begin();
-        }
-
-        inline ArgType maxarg() const
-        {
-            return *_t.rbegin();
-        }
-    };
-
-    template <typename KnotsArr, typename CtrlsArr>
-    constexpr inline SplineT<KnotsArr, CtrlsArr> make_spline(KnotsArr const& knots, CtrlsArr const& ctrls, int k)
-    {
-        return {knots, ctrls, k};
     }
 }
