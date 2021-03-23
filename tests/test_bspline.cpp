@@ -245,6 +245,11 @@ TEST(bspline, deg9_spline)
         EXPECT_NEAR(der1, derivs1[i], 1e-7);
         EXPECT_NEAR(der5, derivs5[i], 1e-3);
     }
+
+    // test extrapolation
+    EXPECT_NEAR(0.15700117862434126, spline_eval(t, c, k, -1.), 1e-6);
+    EXPECT_NEAR(1.3965488932444714, spline_eval(t, c, k, -1., 1), 1e-6);
+    EXPECT_NEAR(-0.32136867148801684, spline_eval(t, c, k, -1., 2), 1e-5);
 }
 
 int main(int argc, char* argv[])
