@@ -1,0 +1,1063 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\options onecolumn,12pt
+\use_default_options true
+\maintain_unincluded_children false
+\language russian
+\language_package default
+\inputencoding utf8
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style russian
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+B-Spline
+\end_layout
+
+\begin_layout Standard
+B-Spline – функция вида
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray}
+f\left(x\right) & = & \sum_{j}c_{j}B_{j,k}\left(x\right)\label{eq:bspline}
+\end{eqnarray}
+
+\end_inset
+
+где 
+\begin_inset Formula $c_{j}\in V$
+\end_inset
+
+ – коэффициенты сплайна (контрольные точки), а 
+\begin_inset Formula $B_{j,k}:K\to K$
+\end_inset
+
+ – полиномы порядка 
+\begin_inset Formula $k$
+\end_inset
+
+ от 
+\begin_inset Formula $x$
+\end_inset
+
+, определяемые рекурентным соотношением
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+B_{j,0} & = & \begin{cases}
+1 & x\in\left[t_{j},t_{j+1}\right)\\
+0
+\end{cases}\\
+B_{j,r} & = & \frac{x-t_{j}}{t_{j+r}-t_{j}}B_{j,r-1}+\frac{t_{j+r+1}-x}{t_{j+r+1}-t_{j+1}}B_{j+1,r-1}.
+\end{eqnarray*}
+
+\end_inset
+
+Здесь 
+\begin_inset Formula $t_{j}\in K$
+\end_inset
+
+ – узлы сплайна (неубывающая последовательность чисел).
+ Узлы обычно задаются в виде последовательности
+\begin_inset Formula 
+\begin{eqnarray*}
+t & = & \left(\underbrace{t_{0},t_{0},...,t_{0}}_{k-\text{раз}},t_{0},t_{1},t_{2},...,t_{n},\underbrace{t_{n},t_{n},...,t_{n}}_{k-\text{раз}}\right)\in K^{n+1+2k},
+\end{eqnarray*}
+
+\end_inset
+
+а коэффициенты: 
+\begin_inset Formula 
+\begin{eqnarray*}
+c=\left(c_{-k},\dots,c_{-2},c_{-1},c_{0},c_{1},\dots,c_{n-1}\right) & \in & V^{n+k}.
+\end{eqnarray*}
+
+\end_inset
+
+Здесь 
+\begin_inset Formula $V$
+\end_inset
+
+ – векторное пространство над полем 
+\begin_inset Formula $K$
+\end_inset
+
+.
+ Это может быть множество матриц заданной размерности, множество вещественных
+ чисел и т.д.
+ Такой подход позволяет несколько упростить алгоритм вычисления значения
+ сплайна и зафиксировать значения производных на концах.
+\end_layout
+
+\begin_layout Standard
+Для конкретного 
+\begin_inset Formula $x$
+\end_inset
+
+ из всей суммы ненулевые значения 
+\begin_inset Formula $B_{j,k}\left(x\right)\ne0$
+\end_inset
+
+ имеют только 
+\begin_inset Formula $k+1$
+\end_inset
+
+ функций: 
+\begin_inset Formula $B_{i},B_{i-1},\dots B_{i-k}$
+\end_inset
+
+ (
+\begin_inset Formula $i$
+\end_inset
+
+ удовлетворяет 
+\begin_inset Formula $x\in\left[t_{i},t_{i+1}\right)$
+\end_inset
+
+), поэтому для вычисления выражения 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:bspline"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ нет необходимости считать всю сумму, достаточно вычислить лишь частичную
+ сумму из 
+\begin_inset Formula $k+1$
+\end_inset
+
+ слагаемых.
+\end_layout
+
+\begin_layout Standard
+Если для сплайна определены 
+\begin_inset Formula $N$
+\end_inset
+
+ узлов, то количество контрольных точек будет 
+\begin_inset Formula $N-k-1$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Почему контрольные точки 
+\begin_inset Formula $c_{-k},\dots,c_{n-1}$
+\end_inset
+
+? Потому, что максимально возможный индекс 
+\begin_inset Formula $i=n-1$
+\end_inset
+
+.
+ В этом случае значение сплайна 
+\begin_inset Formula 
+\[
+f=c_{n-1}B_{n-1}+c_{n-2}B_{n-2}+\dots+c_{n-k-1}B_{n-k-1}
+\]
+
+\end_inset
+
+будет зависеть от 
+\begin_inset Formula $c_{n-1},\dots,c_{n-1-k}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Алгоритм вычисления значения сплайна в заданной точке
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Formula $B_{i,r}=\frac{x-t_{i}}{t_{i+r}-t_{i}}B_{i,r-1}+\frac{t_{i+r+1}-x}{t_{i+r+1}-t_{i+1}}B_{i+1,r-1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $d_{j,r}=\frac{x-t_{i}}{t_{i+r}-t_{i}}d_{j,r-1}+\frac{t_{i+r+1}-x}{t_{i+r+1}-t_{i+1}}d_{i+1,r-1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Обозначим
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\begin{eqnarray*}
+d_{j,r} & : & =B_{i-k+j,r-1},\\
+i & \mapsto & i-k+j
+\end{eqnarray*}
+
+\end_inset
+
+тогда
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\begin{eqnarray*}
+d_{j,r} & = & \frac{x-t_{i-k+j}}{t_{i-k+r+j}-t_{i-k+j}}d_{j,r-1}+\frac{t_{i+r+1-k+j}-x}{t_{i+r+1-k+j}-t_{i-k+1+j}}d_{i+1,r-1}.
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $d_{j,k}^{'}=k\left(\frac{d_{j,k-1}}{t_{i+j}-t_{i-k+j}}-\frac{d_{j+1,k-1}}{t_{i+j+1}-t_{i-k+j+1}}\right)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Для данного 
+\begin_inset Formula $x$
+\end_inset
+
+ найдём 
+\begin_inset Formula $i,$
+\end_inset
+
+ который удовлетворяет
+\begin_inset Formula 
+\begin{eqnarray*}
+i & : & x\in\left[t_{i},t_{i+1}\right),
+\end{eqnarray*}
+
+\end_inset
+
+или если 
+\begin_inset Formula $x$
+\end_inset
+
+ вне интервала 
+\begin_inset Formula $\left[t_{0},t_{n}\right]$
+\end_inset
+
+, то 
+\begin_inset Formula 
+\begin{eqnarray*}
+i & = & \begin{cases}
+0 & x<t_{0}\\
+n-1 & x\geq t_{n}
+\end{cases}
+\end{eqnarray*}
+
+\end_inset
+
+В силу того, что последовательность монотонная, 
+\begin_inset Formula $i$
+\end_inset
+
+ будет единственным.
+ Поиск будет иметь логарифмическую от длины 
+\begin_inset Formula $t$
+\end_inset
+
+ сложность.
+\end_layout
+
+\begin_layout Enumerate
+Выберем 
+\begin_inset Formula $B_{i,0}=1$
+\end_inset
+
+ (все остальные 
+\begin_inset Formula $B_{j,0}=0$
+\end_inset
+
+, 
+\begin_inset Formula $j\ne i$
+\end_inset
+
+), вычислим 
+\begin_inset Formula 
+\begin{align*}
+B_{i,1} & =\frac{x-t_{j}}{t_{j+1}-t_{j}}B_{i,0}=\frac{x-t_{j}}{t_{j+1}-t_{j}}\\
+B_{i-1,1} & =\frac{t_{i+1}-x}{t_{i+1}-t_{i}}B_{i,0}=\frac{t_{i+1}-x}{t_{i+1}-t_{i}}
+\end{align*}
+
+\end_inset
+
+Затем 
+\begin_inset Formula $B_{j,2}$
+\end_inset
+
+ для 
+\begin_inset Formula $j=i-2\dots i$
+\end_inset
+
+, затем 
+\begin_inset Formula $B_{j,3}$
+\end_inset
+
+ для 
+\begin_inset Formula $j=i-3\dots i$
+\end_inset
+
+ и т.д.
+ В итоге получим следующую таблицу 
+\begin_inset Formula 
+\[
+D:=\left(\begin{array}{ccccc}
+0 &  & 0 & 0 & B_{i,0}\\
+0 & \dots & 0 & B_{i-1,1} & B_{i,1}\\
+ &  & B_{i-2,2} & B_{i-1,2} & B_{i,2}\\
+ & \iddots &  &  & \vdots\\
+B_{i-k,k} & B_{i-k+1,k} & \dots &  & B_{i,k}
+\end{array}\right)
+\]
+
+\end_inset
+
+где 
+\begin_inset Formula $B_{i-\alpha,r}$
+\end_inset
+
+ вычисляется по формуле
+\begin_inset Formula 
+\begin{align*}
+B_{i-\alpha,r} & =\frac{x-t_{i-\alpha}}{t_{i-\alpha+r}-t_{i-\alpha}}B_{i-\alpha,r-1}+\frac{t_{i-\alpha+r+1}-x}{t_{i-\alpha+r+1}-t_{i-\alpha+1}}B_{i-\alpha+1,r-1}
+\end{align*}
+
+\end_inset
+
+при 
+\begin_inset Formula $\alpha\in1\dots r-1$
+\end_inset
+
+ и для 
+\begin_inset Formula $\alpha\in\left\{ 0,r\right\} $
+\end_inset
+
+ по формулам
+\begin_inset Formula 
+\begin{align*}
+B_{i-r,r} & =\frac{t_{i+1}-x}{t_{i+1}-t_{i-r+1}}B_{i-r+1,r-1}\\
+B_{i,r} & =\frac{x-t_{i}}{t_{i+r}-t_{i}}B_{i,r-1}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Последняя строка таблицы 
+\begin_inset Formula $D$
+\end_inset
+
+ содержит ненулевые функции 
+\begin_inset Formula $B_{j,k}\left(x\right)$
+\end_inset
+
+.
+ Для нахождения значения сплайна в точке 
+\begin_inset Formula $x$
+\end_inset
+
+ достаточно вычислить 
+\begin_inset Formula 
+\[
+f\left(x\right)=\sum_{\beta=0}^{k}c_{i-k+\beta}B_{i-k+\beta}\left(x\right)
+\]
+
+\end_inset
+
+(всего 
+\begin_inset Formula $k+1$
+\end_inset
+
+ слагаемых).
+ Стоит отметить, что функция 
+\begin_inset Formula $B_{i,k}$
+\end_inset
+
+ определяется 
+\begin_inset Formula $k+1$
+\end_inset
+
+ узлами 
+\begin_inset Formula $t_{i}\dots t_{i+k}$
+\end_inset
+
+, а функция 
+\begin_inset Formula $B_{i-k,k}$
+\end_inset
+
+ – узлами 
+\begin_inset Formula $t_{i-k+1}\dots t_{i+1}$
+\end_inset
+
+.
+ Значит, на значение функции 
+\begin_inset Formula $f\left(x\right)$
+\end_inset
+
+ влияние оказывают узлы 
+\begin_inset Formula $t_{i-k+1}\dots t_{i+k}$
+\end_inset
+
+ (
+\begin_inset Formula $2k$
+\end_inset
+
+ штук) и коэффициенты 
+\begin_inset Formula $c_{i-k}\dots c_{i}$
+\end_inset
+
+ (
+\begin_inset Formula $k+1$
+\end_inset
+
+ штук).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+0 1
+\end_layout
+
+\begin_layout Standard
+1 2
+\end_layout
+
+\begin_layout Standard
+2 4
+\end_layout
+
+\begin_layout Standard
+3 6
+\end_layout
+
+\begin_layout Subsection
+Сложность алгоритма
+\end_layout
+
+\begin_layout Standard
+Зачастую порядок сплайна выбирают 
+\begin_inset Formula $k=3$
+\end_inset
+
+ или 
+\begin_inset Formula $k=5$
+\end_inset
+
+.
+ В этом случае для заполнения таблицы 
+\begin_inset Formula $D$
+\end_inset
+
+ необходимо вычислить 
+\begin_inset Formula $\frac{k\left(k+1\right)}{2}$
+\end_inset
+
+ базисных функций – то есть 
+\begin_inset Formula $6$
+\end_inset
+
+ (для 
+\begin_inset Formula $k=3$
+\end_inset
+
+) или 
+\begin_inset Formula $15$
+\end_inset
+
+ (для 
+\begin_inset Formula $k=5$
+\end_inset
+
+) значений.
+ Сами вычисления довольно простые – они содержат 5 сложений, 2 деления и
+ 2 умножения.
+ Вычисление самой функции требует вычисления 
+\begin_inset Formula $k+1$
+\end_inset
+
+ умножения и 
+\begin_inset Formula $k$
+\end_inset
+
+ сложений над пространством 
+\begin_inset Formula $V$
+\end_inset
+
+).
+ В итоге 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\frac{k\left(k+1\right)}{2}\cdot9$
+\end_inset
+
+ арифметический операций над полем 
+\begin_inset Formula $K$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $2k+1$
+\end_inset
+
+ арифметических операций над пространством 
+\begin_inset Formula $V$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Алгоритмом Де-Бура, в свою очередь, требует 
+\begin_inset Formula $\sim\frac{\left(k+1\right)\left(k+2\right)}{2}$
+\end_inset
+
+ арифметических операций над пространством 
+\begin_inset Formula $V$
+\end_inset
+
+.
+ В случае, если 
+\begin_inset Formula $V$
+\end_inset
+
+ – множество матриц большой размерности, это может быть существенно.
+\end_layout
+
+\begin_layout Section
+Вычисление производной сплайна
+\end_layout
+
+\begin_layout Subsection
+Производная первого порядка
+\end_layout
+
+\begin_layout Standard
+Первая производная сплайна 
+\begin_inset Formula 
+\begin{eqnarray}
+\frac{df\left(x\right)}{dx} & = & \sum_{j}c_{j}\frac{dB_{j,k}\left(x\right)}{dx}\label{eq:bspline_derivative}
+\end{eqnarray}
+
+\end_inset
+
+определяется через производные базисных функций 
+\begin_inset Formula $\frac{dB_{j,k}}{dx}$
+\end_inset
+
+, которые выражаются через базисные функции порядка 
+\begin_inset Formula $k-1$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{dB_{j,k}}{dx} & = & \frac{k}{t_{j+k}-t_{j}}B_{j,k-1}-\frac{k}{t_{j+k+1}-t_{j+1}}B_{j+1,k-1}.
+\end{eqnarray*}
+
+\end_inset
+
+Заметим, что значения функций 
+\begin_inset Formula $B_{i-k+1,k-1}\dots B_{i,k-1}$
+\end_inset
+
+ содержатся в 
+\begin_inset Formula $k-1$
+\end_inset
+
+ строке таблицы 
+\begin_inset Formula $D$
+\end_inset
+
+.
+ Значит, для вычисления первой производной достаточно заполнить таблицу
+ 
+\begin_inset Formula $D$
+\end_inset
+
+ (по аналогии с прердыдущим алгоритмом) до строки 
+\begin_inset Formula $k-1$
+\end_inset
+
+, а строку 
+\begin_inset Formula $k$
+\end_inset
+
+ посчитать в соответствии с формулами
+\begin_inset Formula 
+\[
+\frac{dB_{i-\alpha,k}}{dx}=\frac{k}{t_{i-\alpha+k}-t_{i-\alpha}}B_{i-\alpha,k-1}-\frac{k}{t_{i-\alpha+k+1}-t_{i-\alpha+1}}B_{i-\alpha+1,k-1}
+\]
+
+\end_inset
+
+для 
+\begin_inset Formula $\alpha\in1\dots k-1$
+\end_inset
+
+ и 
+\begin_inset Formula 
+\begin{align*}
+\frac{dB_{i-k,k}}{dx} & =-\frac{k}{t_{i+1}-t_{i-k+1}}B_{i-k+1,k-1}\\
+\frac{dB_{i,k}}{dx} & =\frac{k}{t_{i+k}-t_{i}}B_{i,k-1}
+\end{align*}
+
+\end_inset
+
+для 
+\begin_inset Formula $\alpha\in\left\{ k,0\right\} $
+\end_inset
+
+ соответственно.
+\end_layout
+
+\begin_layout Subsection
+Производная порядка 
+\begin_inset Formula $d$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Для вычисления производной порядка 
+\begin_inset Formula $d$
+\end_inset
+
+ необходимо заполнить 
+\begin_inset Formula $k-d$
+\end_inset
+
+ строк таблицы 
+\begin_inset Formula $D$
+\end_inset
+
+, оставшиеся строки заполнить по правилу 
+\begin_inset Formula 
+\[
+B_{i-\alpha,r}^{\left(r-k+d\right)}=\frac{r}{t_{i-\alpha+r}-t_{i-\alpha}}B_{i-\alpha,r-1}^{\left(r-k+d-1\right)}-\frac{r}{t_{i-\alpha+r+1}-t_{i-\alpha+1}}B_{i-\alpha+1,r-1}^{\left(r-k+d-1\right)}
+\]
+
+\end_inset
+
+(для краткости введено обозначение 
+\begin_inset Formula $B_{j,r}^{\left(\sigma\right)}:=\frac{dB_{j,r}^{\sigma}}{dx^{\sigma}}$
+\end_inset
+
+) при 
+\begin_inset Formula $\alpha\in1\dots r-1$
+\end_inset
+
+ и 
+\begin_inset Formula 
+\begin{align*}
+B_{i-r,r}^{\left(r-k+d\right)} & =-\frac{r}{t_{i+1}-t_{i-r+1}}B_{i-r+1,r-1}^{\left(r-k+d-1\right)}\\
+B_{i,r}^{\left(r-k+d\right)} & =\frac{r}{t_{i+r}-t_{i}}B_{i,r-1}^{\left(r-k+d-1\right)}
+\end{align*}
+
+\end_inset
+
+при 
+\begin_inset Formula $\alpha\in\left\{ r,0\right\} $
+\end_inset
+
+ соответственно.
+ Получим таблицу вида 
+\begin_inset Formula 
+\[
+D^{d}:=\left(\begin{array}{cccccc}
+ & 0 &  & 0 & 0 & B_{i,0}\\
+ & 0 & \dots & 0 & B_{i-1,1} & B_{i,1}\\
+\\
+ &  & B_{i-k+d,k-d} & B_{i-k+d+1,k-d} & \dots & B_{i,k-d}\\
+ & \frac{dB_{i-k+d-1,k-d+1}}{dx} & \frac{dB_{i-k+d,k-d+1}}{dx} &  & \dots & \frac{dB_{i,k-d+1}}{dx}\\
+ &  &  &  & \vdots\\
+\frac{d^{d}B_{i-k,k}}{dx^{d}} & \frac{d^{d}B_{i-k+1,k}}{dx^{d}} &  &  & \dots & \frac{d^{d}B_{i,k}}{dx^{d}}
+\end{array}\right)
+\]
+
+\end_inset
+
+Используя эту таблицу легко вычислить значение производной функции – для
+ этого достаточно вычислить сумму 
+\begin_inset Formula 
+\[
+\frac{d^{d}f\left(x\right)}{dx^{d}}=\sum_{\beta=0}^{k}c_{i-k+\beta}\frac{d^{d}B_{i-k+\beta}\left(x\right)}{dx^{d}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Алгоритм Де Бура
+\end_layout
+
+\begin_layout Subsection
+Значение функции
+\end_layout
+
+\begin_layout Standard
+Создаём массив из 
+\begin_inset Formula $k+1$
+\end_inset
+
+ элементов 
+\begin_inset Formula $d_{0},d_{1},...,d_{k}$
+\end_inset
+
+, заполняя его значениями 
+\begin_inset Formula 
+\begin{eqnarray*}
+d_{j}^{0} & = & c_{i-k+j}\quad\text{for}\,j=0..k
+\end{eqnarray*}
+
+\end_inset
+
+Пробегаемся по массиву справа налево, перезаписывая 
+\begin_inset Formula $d_{j}^{0}\mapsto d_{j}^{1}$
+\end_inset
+
+ по правилу
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\alpha_{j}^{r} & = & \frac{x-t_{i-k+j}}{t_{i+j+1-r}-t_{i-k+j}}\\
+d_{j}^{1} & = & \left(1-\alpha_{j}^{1}\right)d_{j-1}^{0}+\alpha_{j}^{1}d_{j}^{0}
+\end{eqnarray*}
+
+\end_inset
+
+для всех 
+\begin_inset Formula $j=k..1$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+d_{j}^{r} & = & \left(1-\alpha_{j}^{r}\right)d_{j-1}^{r-1}+\alpha_{j}^{r}d_{j}^{r-1}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Производная
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Formula $\frac{dB_{i,k}}{dx}=k\left(\frac{B_{i,k-1}}{t_{i+k}-t_{i}}-\frac{B_{i+1,k-1}}{t_{i+k+1}-t_{i+1}}\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $f'=\sum k\frac{c_{i}-c_{i-1}}{t_{i+k}-t_{i}}B_{i,k-1}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $f'=\sum d_{i}B_{i,k-1}$
+\end_inset
+
+ где .
+\begin_inset Formula 
+\begin{eqnarray*}
+d_{i} & = & k\frac{c_{i}-c_{i-1}}{t_{i+k}-t_{i}}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $f''=\sum d_{i}B_{i,k-1}^{'}=$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $\frac{dB_{i,k-1}}{dx}=\left(k-1\right)\left(\frac{B_{i,k-2}}{t_{i+k-1}-t_{i}}-\frac{B_{i+1,k-2}}{t_{i+k}-t_{i+1}}\right)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $\sum d_{i}\frac{dB_{i,k-1}}{dx}=\left(k-1\right)\left[\sum d_{i}\frac{B_{i,k-2}}{t_{i+k-1}-t_{i}}-\sum d_{i}\frac{B_{i+1,k-2}}{t_{i+k}-t_{i+1}}\right]$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $\left(k-1\right)\left[\sum_{i}d_{i}\frac{B_{i,k-2}}{t_{i+k-1}-t_{i}}-\sum_{i}d_{i-1}\frac{B_{i,k-2}}{t_{i+k-1}-t_{i}}\right]=$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $\sum_{i}\left(k-1\right)\frac{d_{i}-d_{i-1}}{t_{i+k-1}-t_{i}}B_{i,k-2}=$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula 
+\begin{eqnarray*}
+a_{i} & = & \left(k-1\right)\frac{d_{i}-d_{i-1}}{t_{i+k-1}-t_{i}}
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Сплайн апроксимация
+\end_layout
+
+\begin_layout Standard
+Необходимо найти слайн (его коэффициенты 
+\begin_inset Formula $c$
+\end_inset
+
+, узлы заданы изначально), который минимизирует критерий качества 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\Phi & =\sum_{i}\left[\left\Vert y_{i}-f\left(c,x_{i}\right)\right\Vert ^{2}+s\int_{0}^{T}\left\Vert f^{''}\left(c,x\right)\right\Vert ^{2}dx\right]\\
+c & =\arg\min_{c}\Phi\left(c\right)
+\end{align*}
+
+\end_inset
+
+для заданного набора пар 
+\begin_inset Formula $\left(x_{i},y_{i}\right)$
+\end_inset
+
+.
+ Рассмотрим случай 
+\begin_inset Formula $x_{i},y_{i}\in\mathbb{R}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Случай 
+\begin_inset Formula $s=0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Применяем МНК 
+\begin_inset Formula 
+\begin{align*}
+\Phi & =\sum_{i}\left(\sum_{j}c_{j}B_{j,k}\left(x_{i}\right)-y_{i}\right)^{2}\\
+\frac{\partial\Phi}{\partial c_{l}} & =2\sum_{i}\left(\sum_{j}c_{j}B_{j,k}\left(x_{i}\right)-y_{i}\right)B_{l,k}\left(x_{i}\right)
+\end{align*}
+
+\end_inset
+
+получаем СЛАУ 
+\begin_inset Formula 
+\[
+\sum_{j}\left[\sum_{i}B_{j,k}\left(x_{i}\right)B_{l,k}\left(x_{i}\right)\right]c_{j}=\sum_{i}y_{i}B_{l,k}\left(x_{i}\right)
+\]
+
+\end_inset
+
+в матричном виде 
+\begin_inset Formula 
+\begin{align*}
+Ac & =h,\\
+A_{lj} & =\sum_{i}B_{j,k}\left(x_{i}\right)B_{l,k}\left(x_{i}\right),\\
+h_{l} & =\sum_{i}y_{i}B_{l,k}\left(x_{i}\right).
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Случай 
+\begin_inset Formula $s\ne0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\Phi & =\sum_{i}\left(\sum_{j}c_{j}B_{j,k}\left(x_{i}\right)-y_{i}\right)^{2}+s\int_{0}^{T}\left(f^{''}\left(c,x\right)\right)^{2}dx\\
+\frac{\partial\Phi}{\partial c_{l}} & =2\sum_{i}\left(\sum_{j}c_{j}B_{j,k}\left(x_{i}\right)-y_{i}\right)B_{l,k}\left(x_{i}\right)+2s\sum_{j}\left[\int_{0}^{T}B_{l,k}^{''}\left(x\right)B_{j,k}^{''}\left(x\right)dx\right]c_{j}
+\end{align*}
+
+\end_inset
+
+получаем СЛУ 
+\begin_inset Formula 
+\[
+\sum_{j}\left[\sum_{i}B_{j,k}\left(x_{i}\right)B_{l,k}\left(x_{i}\right)\right]c_{j}+s\sum_{j}\left[\int_{0}^{T}B_{l,k}^{''}\left(x\right)B_{j,k}^{''}\left(x\right)dx\right]c_{j}=\sum_{i}y_{i}B_{l,k}\left(x_{i}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space ~
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
