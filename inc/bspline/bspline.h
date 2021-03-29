@@ -12,11 +12,11 @@ namespace bspline
 
     /**
      * @brief for given val, and sorted array arr find i s.t.
-     * 
+     *
      *      arr[i] <= val < arr[i+1]
-     * or 
+     * or
      *      0 if val < arr[0]
-     * or 
+     * or
      *      size-1 of val >= arr[size-1]
      */
     template <typename Arr, typename Val>
@@ -31,7 +31,7 @@ namespace bspline
                 return from;
 
             int i = (from + to) / 2;
-            
+
             if (arr[i] > val)
                 to = i;
             else
@@ -42,9 +42,9 @@ namespace bspline
     template <typename T>
     inline T clamp(T const& v, T const& low, T const& hi)
     {
-        return 
-            v < low ? low : 
-            v > hi ? hi : 
+        return
+            v < low ? low :
+            v > hi ? hi :
             v;
     }
 
@@ -197,7 +197,7 @@ namespace bspline
         using Arg = typename KnotsArray::value_type;
         Arg knots[max(2*k, 1)];
         // spline valuedepends on the knots i-k+1...i+k
-        // copy them into the temporarily buffer, and pass 
+        // copy them into the temporarily buffer, and pass
         // the pointer to t_i location
         for (int j = -k + 1; j <= k; ++ j)
             knots[k - 1 + j] = t[i + j];
@@ -205,7 +205,7 @@ namespace bspline
     }
 
     /**
-     * @brief evaluate value of the spline function using 
+     * @brief evaluate value of the spline function using
      *  De Boor's algorithm
      * @param t spline knots
      * @param c spline coefficients (controls)
@@ -246,11 +246,11 @@ namespace bspline
         using Result = typename CtrlsArr::value_type;
         using Coef = typename KnotsArr::value_type;
         int i = spline_knot_index(t, k, x);
-        Coef d[k + 1];
-        spline_eval_basis(t, k, i, x, d, nder);
-        Result result = d[0] * c[i - k];
+        Coef basis[k + 1];
+        spline_eval_basis(t, k, i, x, basis, nder);
+        Result result = basis[0] * c[i - k];
         for (int j = 1; j <= k; ++ j)
-            result += d[j] * c[i - k + j];
+            result += basis[j] * c[i - k + j];
         return result;
     }
 }
