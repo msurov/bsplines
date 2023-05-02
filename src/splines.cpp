@@ -219,3 +219,4 @@ void Spline<T, Dim>::interpolate(std::vector<T> const& x, std::vector<ElemType> 
 template class Spline<double, 1>;
 template class Spline<double, 2>;
 template class Spline<double, 3>;
+template class Spline<double, 4>;

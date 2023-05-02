@@ -40,6 +40,7 @@ private:
 using Spline1d = Spline<double, 1>;
 using Spline2d = Spline<double, 2>;
 using Spline3d = Spline<double, 3>;
+using Spline4d = Spline<double, 4>;
 
 template <typename T>
 inline Spline<T, 1> spline_interp(std::vector<T> const& x, std::vector<T> const& y, int degree)
