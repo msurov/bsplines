@@ -26,6 +26,7 @@ public:
   inline auto const& knots() const { return knots_; }
   inline auto const& ctrls() const { return ctrls_; }
   inline int degree() const { return degree_; }
+  inline bool initialized() const { return degree_ >= 0; }
   void interpolate(std::vector<T> const& x, std::vector<ElemType> const& y, int degree);
 
 private:
@@ -33,7 +34,7 @@ private:
 
   Eigen::Matrix<T, 1, Eigen::Dynamic> knots_;
   Eigen::Matrix<T, Dim, Eigen::Dynamic> ctrls_;
-  int degree_ = 1;
+  int degree_ = -1;
 };
 
 
