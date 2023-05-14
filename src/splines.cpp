@@ -22,7 +22,7 @@ inline int spline_knot_index(Eigen::Matrix<T, 1, N> const& knots, int k, T const
 {
   const int n = knots.size();
   int i = bisect(knots, x);
-  i = std::clamp<int>(i, k, n - k - 2);
+  i = std::clamp<int>(i, k, n - 2 * k);
   return i;
 }
 

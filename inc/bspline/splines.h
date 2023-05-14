@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Eigen/Dense>
+#include <cassert>
 
 
 /**
@@ -17,11 +18,15 @@ public:
   ElemType evaluate(T x, int nder = 0) const;
   inline ElemType operator()(const T& x, int nder = 0) const { return evaluate(x, nder); }
   inline T argmin() const {
-    return knots_(0);
+    assert(degree_ >= 0);
+    assert(knots_.cols() > degree_);
+    return knots_(degree_);
   }
   inline T argmax() const { 
+    assert(degree_ >= 0);
+    assert(knots_.cols() > degree_);
     const int n = knots_.cols();
-    return knots_(n - 1);
+    return knots_(n - degree_ - 1);
   }
   inline auto const& knots() const { return knots_; }
   inline auto const& ctrls() const { return ctrls_; }
