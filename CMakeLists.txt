@@ -12,8 +12,6 @@ add_library(bspline STATIC
 target_include_directories(bspline PUBLIC ${PROJECT_SOURCE_DIR}/inc)
 target_link_libraries(bspline Eigen3::Eigen)
 
-find_package(GTest)
-if (GTEST_FOUND)
-    enable_testing()
+if (CMAKE_TESTING_ENABLED)
     add_subdirectory(tests)
 endif()
